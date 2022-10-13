@@ -1,16 +1,18 @@
 <template>
-    <div>
+    <ContentComponent>
         <router-view/>
-    </div>
+    </ContentComponent>
 </template>
 
 <script>
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap';
+import ContentComponent from "@/components/ContentComponent";
 
 export default {
     name: 'App',
     components: {
+        ContentComponent
     }
 }
 </script>

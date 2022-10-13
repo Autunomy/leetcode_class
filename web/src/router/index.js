@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router'
 import NotFound from "@/views/error/NotFound";
 import ProblemContentView from "@/views/problem/ProblemContentView";
 import ContentListView from "@/views/content/ContentListView";
+import ShowContentView from "@/views/content/ShowContentView";
 
 const routes = [
     {
@@ -18,6 +19,11 @@ const routes = [
         path: "/content/list/:problemId",
         name: 'contentList',
         component: ContentListView,
+    },
+    {
+        path:"/content/show/:contentId",
+        name:"showContent",
+        component: ShowContentView,
     },
     {
         path: "/404/",
