@@ -1,6 +1,6 @@
 package com.hty.api.service.impl.problem;
 
-import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hty.api.dao.ProblemMapper;
 import com.hty.api.dao.TagMapper;
 import com.hty.api.pojo.Problem;
@@ -23,7 +23,9 @@ public class GetProblemListServiceImpl implements GetProblemListService {
     @Override
     public List<Map<String,String>> getList() {
         List<Map<String,String>> resp = new ArrayList<>();
-        List<Problem> problems = problemMapper.selectList(null);
+        QueryWrapper<Problem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("id");
+        List<Problem> problems = problemMapper.selectList(queryWrapper);
         for (Problem problem : problems) {
             Map<String,String> temp = new HashMap<>();
             temp.put("id",problem.getId().toString());

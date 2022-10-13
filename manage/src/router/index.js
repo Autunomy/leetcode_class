@@ -1,6 +1,9 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import NotFound from "@/views/error/NotFound";
 import ManageProblemView from "@/views/problem/ManageProblemView";
+import ManageTagView from "@/views/tag/ManageTagView";
+import ManageContentView from "@/views/content/ManageContentView";
+import AddContentView from "@/views/content/AddContentView";
 
 const routes = [
     {
@@ -12,6 +15,21 @@ const routes = [
         path:"/manage/problem",
         name:"manageProblem",
         component: ManageProblemView,
+    },
+    {
+        path: "/manage/tag",
+        name:"manageTag",
+        component: ManageTagView,
+    },
+    {
+        path: "/manage/content",
+        name:"manageContent",
+        component: ManageContentView,
+    },
+    {
+        path: "/manage/content/add/:problemId",
+        name: "addContent",
+        component: AddContentView,
     },
     {
         path: "/404/",

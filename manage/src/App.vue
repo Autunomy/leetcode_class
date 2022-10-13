@@ -1,5 +1,7 @@
 <template>
     <ContentComponent>
+        <NavBar></NavBar>
+        <br>
         <router-view/>
     </ContentComponent>
 </template>
@@ -8,11 +10,13 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap';
 import ContentComponent from "@/components/ContentComponent";
+import NavBar from "@/components/NavBar";
 
 export default {
     name: 'App',
     components: {
-        ContentComponent
+        ContentComponent,
+        NavBar,
     }
 }
 </script>

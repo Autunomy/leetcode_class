@@ -49,8 +49,8 @@
                 <td>{{ problem.tagName }}</td>
                 <td>
                     <button class="btn btn-primary btn-sm" style="margin-right: 10px">修改</button>
-
-                    <button class="btn btn-danger btn-sm">删除</button>
+                    <button class="btn btn-danger btn-sm" style="margin-right: 10px">删除</button>
+                    <button class="btn btn-warning btn-sm" @click="toAdd(problem.id)">编写题解</button>
                 </td>
             </tr>
             </tbody>
@@ -62,6 +62,7 @@
 import {ref} from "vue";
 import $ from "jquery";
 import {Modal} from "bootstrap/dist/js/bootstrap";
+import {useRouter} from "vue-router";
 
 
 export default {
@@ -73,6 +74,7 @@ export default {
         let title = ref("");
         let link = ref("");
         let tagId = ref(-1);
+        const router = useRouter();
 
         let message = ref("");
 
@@ -129,6 +131,15 @@ export default {
             })
         }
 
+        const toAdd = problemId => {
+            router.push({
+                name:"addContent",
+                params:{
+                    problemId,
+                }
+            })
+        }
+
         return {
             tagList,
             problemList,
@@ -138,6 +149,7 @@ export default {
             link,
             addProblem,
             message,
+            toAdd,
         }
     }
 }
