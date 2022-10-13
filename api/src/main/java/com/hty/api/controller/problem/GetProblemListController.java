@@ -6,13 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 public class GetProblemListController {
     @Autowired
     private GetProblemListService getProblemListService;
 
     @GetMapping("/problem/getlist")
-    public JSONObject getList(){
+    public List<Map<String,String>> getList(){
         return getProblemListService.getList();
     }
 

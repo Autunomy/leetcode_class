@@ -1,29 +1,17 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import NotFound from "@/views/error/NotFound";
-import ProblemContentView from "@/views/problem/ProblemContentView";
-import ContentListView from "@/views/content/ContentListView";
-import ShowContentView from "@/views/content/ShowContentView";
+import ManageProblemView from "@/views/problem/ManageProblemView";
 
 const routes = [
     {
         path: "/",
         name: "home",
-        redirect: "/problem",
+        redirect: "/manage/problem",
     },
     {
-        path: "/problem",
-        name: "problem",
-        component: ProblemContentView
-    },
-    {
-        path: "/content/list/:problemId",
-        name: 'contentList',
-        component: ContentListView,
-    },
-    {
-        path:"/content/show/:contentId",
-        name:"showContent",
-        component: ShowContentView,
+        path:"/manage/problem",
+        name:"manageProblem",
+        component: ManageProblemView,
     },
     {
         path: "/404/",

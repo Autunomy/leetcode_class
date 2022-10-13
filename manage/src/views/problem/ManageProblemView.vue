@@ -1,39 +1,5 @@
 <template>
     <div>
-        <div style="text-align: center">
-            <h3>点击标签显示对应标签的题目</h3>
-        </div>
-        <div style="text-align: center">
-            <button @click="problemWithTag(tag.id,tag.name)" v-for="tag in tagList" :key="tag.id" type="button"
-                    class="btn btn-light">
-                {{ tag.name }}
-            </button>
-        </div>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTag">添加标签</button>
-        <!-- Modal -->
-        <div class="modal fade" id="addTag" style="margin-top: 10vh">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">添加题目</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">标签名</label>
-                            <input v-model="tagName" type="text" class="form-control" id="name" placeholder="请输入标签名称">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <span style="color: red">{{ message }}</span>
-                        <button type="button" class="btn btn-primary" @click="addTag">提交</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <hr>
-
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProblem">添加题目</button>
         <!-- Modal -->
         <div class="modal fade" id="addProblem" style="margin-top: 10vh">
@@ -69,8 +35,26 @@
                 </div>
             </div>
         </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>标题</th>
+                <th>标签</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="problem in problemList" :key="problem.id">
+                <td>{{ problem.title }}</td>
+                <td>{{ problem.tagName }}</td>
+                <td>
+                    <button class="btn btn-primary btn-sm" style="margin-right: 10px">修改</button>
 
-
+                    <button class="btn btn-danger btn-sm">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -78,10 +62,10 @@
 import {ref} from "vue";
 import $ from "jquery";
 import {Modal} from "bootstrap/dist/js/bootstrap";
-import 'bootstrap-icons/bootstrap-icons.svg'
+
 
 export default {
-    name: "ProblemContentView",
+    name: "ManageProblemView",
     setup() {
         let tagList = ref([]);
         let problemList = ref([]);
@@ -89,7 +73,6 @@ export default {
         let title = ref("");
         let link = ref("");
         let tagId = ref(-1);
-        let tagName = ref("");
 
         let message = ref("");
 
@@ -107,22 +90,20 @@ export default {
         }
         getTagList();
 
-        const problemWithTag = (tagId, tagName) => {
+        const getProblemList = () => {
             $.ajax({
-                url: "http://127.0.0.1:8001/problem/getbytag",
-                type: "get",
-                data: {
-                    tagId,
-                },
-                success(resp) {
+                url:"http://127.0.0.1:8001/problem/getlist",
+                type:"get",
+                success(resp){
+                    console.log(resp)
                     problemList.value = resp;
-                    nowTag.value = tagName;
                 },
-                error(resp) {
-                    console.log(resp);
+                error(resp){
+                    console.log(resp)
                 }
             })
         }
+        getProblemList();
 
         const addProblem = () => {
             message.value = "";
@@ -141,27 +122,8 @@ export default {
                         title.value = "";
                         link.value = "";
                         tagId.value = -1;
+                        getProblemList();
                         Modal.getInstance("#addProblem").hide();//关闭模态框
-                    }
-                }
-            })
-        }
-
-        const addTag = () => {
-            message.value = "";
-            $.ajax({
-                url: "http://127.0.0.1:8001/manage/tag/add",
-                type: "post",
-                data: {
-                    name: tagName.value,
-                },
-                success(resp) {
-                    if (resp.message !== "success") {
-                        message.value = resp.message;
-                    } else {
-                        tagName.value = ""
-                        getTagList();
-                        Modal.getInstance("#addTag").hide();//关闭模态框
                     }
                 }
             })
@@ -170,28 +132,17 @@ export default {
         return {
             tagList,
             problemList,
-            problemWithTag,
             nowTag,
             title,
             tagId,
             link,
             addProblem,
             message,
-            tagName,
-            addTag,
         }
     }
 }
 </script>
 
 <style scoped>
-button {
-    border: 1px black solid;
-    margin-left: 10px;
-    margin-top: 10px;
-}
 
-hr {
-    margin-bottom: 5px;
-}
 </style>
