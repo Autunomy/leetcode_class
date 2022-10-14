@@ -30,6 +30,7 @@ public class ListContentServiceImpl implements ListContentService {
         for (Content content : contents) {
             Map<String,String> map = new HashMap<>();
             Problem problem = problemMapper.selectById(content.getProblemId());
+            if(problem == null) continue;
             map.put("id",content.getId().toString());
             map.put("title",content.getTitle());
             map.put("content",content.getContent());

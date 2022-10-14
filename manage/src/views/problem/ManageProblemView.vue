@@ -6,7 +6,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">添加题目</h5>
+                        <h5 class="modal-title">添加题目</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -48,8 +48,71 @@
                 <td>{{ problem.title }}</td>
                 <td>{{ problem.tagName }}</td>
                 <td>
-                    <button class="btn btn-primary btn-sm" style="margin-right: 10px">修改</button>
-                    <button class="btn btn-danger btn-sm" style="margin-right: 10px">删除</button>
+                    <button class="btn btn-primary btn-sm"
+                            style="margin-right: 10px"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateProblem"
+                            @click="getProblemById(problem.id)">修改</button>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="updateProblem" style="margin-top: 10vh">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">修改题目</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">标题</label>
+                                        <input v-model="title" type="text" class="form-control" id="title" placeholder="请输入题目标题">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="link" class="form-label">链接地址</label>
+                                        <input v-model="link" type="text" class="form-control" id="link" placeholder="请输入链接地址">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">标签</label>
+                                        <select v-model="tagId" class="form-select">
+                                            <option value="-1">请选择标签</option>
+                                            <option v-for="tag in tagList" :value="tag.id" :key="tag.id">{{ tag.name }}</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <span style="color: red">{{ message }}</span>
+                                    <button type="button" class="btn btn-primary" @click="updateProblem(problem.id)">修改</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <button class="btn btn-danger btn-sm"
+                            style="margin-right: 10px"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteProblem">删除</button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="deleteProblem" style="margin-top: 10vh">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">删除题目</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    是否删除当前题目？
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" @click="deleteProblem(problem.id)">删除</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <button class="btn btn-warning btn-sm" @click="toAdd(problem.id)">编写题解</button>
                 </td>
             </tr>
@@ -97,7 +160,6 @@ export default {
                 url:"http://127.0.0.1:8001/problem/getlist",
                 type:"get",
                 success(resp){
-                    console.log(resp)
                     problemList.value = resp;
                 },
                 error(resp){
@@ -140,6 +202,73 @@ export default {
             })
         }
 
+        const getProblemById = problemId => {
+            $.ajax({
+                url:"http://127.0.0.1:8001/problem/getbyid",
+                type:"get",
+                data:{
+                    problemId,
+                },
+                success(resp){
+                    title.value = resp.problem.title;
+                    link.value = resp.problem.link;
+                    tagId.value = resp.problem.tagId;
+                },
+                error(resp){
+                    console.log(resp);
+                }
+            })
+        }
+
+        const updateProblem = problemId => {
+            message.value = "";
+            $.ajax({
+                url:"http://localhost:8001/manage/problem/update",
+                type:"post",
+                data:{
+                    problemId,
+                    title:title.value,
+                    link:link.value,
+                    tagId:tagId.value,
+                },
+                success(resp){
+                    if(resp.message === "success"){
+                        title.value = "";
+                        link.value = "";
+                        tagId.value = -1;
+                        getProblemList();
+                        Modal.getInstance("#updateProblem").hide();//关闭模态框
+                    }else{
+                        message.value = resp.message;
+                    }
+                },
+                error(resp){
+                    console.log(resp);
+                }
+            })
+        }
+
+        const deleteProblem = problemId => {
+            $.ajax({
+                url:"http://localhost:8001/manage/problem/delete",
+                type:"post",
+                data:{
+                    problemId,
+                },
+                success(resp){
+                    if(resp.message === "success"){
+                        getProblemList();
+                        Modal.getInstance("#deleteProblem").hide();
+                    }else{
+                        message.value = "删除失败"
+                    }
+                },
+                error(resp){
+                    console.log(resp);
+                }
+            })
+        }
+
         return {
             tagList,
             problemList,
@@ -150,6 +279,9 @@ export default {
             addProblem,
             message,
             toAdd,
+            getProblemById,
+            updateProblem,
+            deleteProblem,
         }
     }
 }
